@@ -7,16 +7,11 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Crear 10 usuarios y 3 proyectos para cada usuario
+        \App\Models\User::factory(10)
+            ->has(\App\Models\Project::factory(10), 'projects') // Relación definida en el modelo
+            ->create();
     }
 }

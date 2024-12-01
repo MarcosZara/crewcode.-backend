@@ -21,6 +21,7 @@ class Project extends Model
         'duration',
         'team_size',
         'repository_url',
+        'level',
     ];
 
     public function creator()

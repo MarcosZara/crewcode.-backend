@@ -12,21 +12,23 @@ class ProjectRequestController extends Controller
 {
 
     public function index(Request $request)
-    {
-        $requests = ProjectRequest::whereHas('project', function ($query) use ($request) {
-
+{
+    $requests = ProjectRequest::whereHas('project', function ($query) {
         $user_id = auth()->id();
-            $query->where('user_id', $user_id); // Proyectos creados por el usuario logueado
-        })->with('user')->orderBy('created_at', 'desc')->get();
+        $query->where('creator_id', $user_id);
+    })->where('status', 'pending')
+      ->with('user')->with('project')
+      ->orderBy('created_at', 'desc')
+      ->get();
 
-        return response()->json($requests);
-    }
+    return response()->json($requests);
+}
 
     public function store(Request $request, $projectId)
 {
     $user_id = auth()->id();
 
-    // Verificar si ya hay una solicitud pendiente
+
     $existingRequest = ProjectRequest::where('user_id', $user_id)
         ->where('project_id', $projectId)
         ->where('status', 'pending')
@@ -36,23 +38,23 @@ class ProjectRequestController extends Controller
         return response()->json(['message' => 'Ya has solicitado unirte a este proyecto.'], 400);
     }
 
-    // Crear la solicitud
+
     $projectRequest = ProjectRequest::create([
         'user_id' => $request->user()->id,
         'project_id' => $projectId,
     ]);
 
-    // Obtener al creador del proyecto
-    $creator = $projectRequest->project->creator; // Relación Project -> User
+
+    $creator = $projectRequest->project->creator;
     if (!$creator) {
         return response()->json(['message' => 'El proyecto no tiene un creador válido.'], 400);
     }
 
-    // Notificar al creador del proyecto
+
     Notification::create([
-        'user_id' => $creator->id, // ID del creador del proyecto
+        'user_id' => $creator->id,
         'project_id' => $projectId,
-        'message' => "{$request->user()->username} quiere unirse a tu proyecto.",
+        'message' => "<strong>{$request->user()->username}</strong> quiere unirse a tu proyecto <strong>{$projectRequest->project->title}</strong>.",
         'type' => 'request',
     ]);
 
@@ -64,21 +66,21 @@ class ProjectRequestController extends Controller
     {
         $projectRequest = ProjectRequest::findOrFail($id);
 
-        $status = $request->input('status'); // 'accepted' o 'rejected'
+        $status = $request->input('status');
         $projectRequest->status = $status;
         $projectRequest->save();
+        $projectTitle = $projectRequest->project->title;
 
-        // Crear una notificación para el solicitante
         Notification::create([
             'user_id' => $projectRequest->user_id,
             'project_id' => $projectRequest->project_id,
             'message' => $status === 'accepted'
-                ? 'Has sido aceptado en el proyecto.'
-                : 'Tu solicitud ha sido rechazada.',
+               ? "Has sido aceptado en el proyecto <strong>$projectTitle</strong>."
+            : "Tu solicitud al proyecto <strong>$projectTitle</strong> ha sido rechazada.",
             'type' => 'response',
         ]);
 
-        // Si aceptado, añadir al usuario como miembro del proyecto
+
         if ($status === 'accepted') {
             $projectRequest->project->members()->attach($projectRequest->user_id);
         }

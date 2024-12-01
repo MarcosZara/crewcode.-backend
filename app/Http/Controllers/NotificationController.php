@@ -11,10 +11,21 @@ class NotificationController extends Controller
     {
         $user_id = auth()->id();
         $notifications = Notification::where('user_id', $user_id)
+                                      ->where('status', 'unread')
                                       ->orderBy('created_at', 'desc')
                                       ->get();
         return response()->json($notifications);
     }
+
+    public function markAsRead($id)
+{
+    $notification = Notification::findOrFail($id);
+    $notification->status = 'read';
+    $notification->save();
+
+    return response()->json(['message' => 'Notification marked as read']);
+}
+
 
     public function show($id)
     {

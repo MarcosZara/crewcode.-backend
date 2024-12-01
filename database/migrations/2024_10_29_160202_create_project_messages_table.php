@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('message_content');
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
         });
     }
 

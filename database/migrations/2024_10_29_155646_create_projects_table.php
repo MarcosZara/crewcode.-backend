@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('title', 100);
             $table->text('description');
             $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
-            $table->enum('status', ['active', 'completed', 'archived'])->default('active');
+            $table->enum('status', ['Activo', 'Completado', 'Archivado'])->default('Activo');
             $table->string('image_url')->nullable();
             $table->string('theme')->nullable();
             $table->string('technologies')->nullable();
-            $table->enum('level', ['basic', 'intermediate', 'advanced'])->default('basic');
+            $table->enum('level', ['Básico', 'Intermedio', 'Avanzado'])->default('Básico');
             $table->text('goal')->nullable();
             $table->string('duration')->nullable();
             $table->unsignedInteger('team_size')->nullable();

@@ -11,34 +11,31 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
+    protected $model = \App\Models\User::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    public function definition()
     {
+        $username = $this->faker->unique()->userName;
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-        ];
-    }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
+
+            'username' => $username,
+            'password' => bcrypt('password'),
+            'level' => $this->faker->randomElement(['Principiante', 'Intermedio', 'Avanzado', 'Experto']),
+
+            'bio' => <<<BIO
+            - 👋 Hola, soy @{$username}
+            - 👀 Estoy interesado en {$this->faker->sentence()}
+            - 🌱 Actualmente estoy aprendiendo {$this->faker->sentence()}
+            - 💞️ Me gustaría colaborar con {$this->faker->sentence()}
+            - 📫 Como contactarme {$this->faker->sentence()}
+            - ⚡ Dato curioso {$this->faker->sentence()}
+            BIO,
+            'interests' => implode(', ', $this->faker->randomElements([
+                'Juegos', 'Tiendas', 'Entretenimiento', 'Portfolio', 'Social', 'Negocios'
+            ], $this->faker->numberBetween(1, 3))),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
     }
 }

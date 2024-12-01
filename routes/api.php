@@ -32,15 +32,24 @@ use App\Http\Controllers\ProjectRequestController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/projects/create', [ProjectController::class, 'store']);
     Route::get('/users', [UserController::class, 'index']);
 
+    Route::get('/projects/user/{userId}', [ProjectController::class, 'getUserProjects']);
 
+    Route::get('/projects/{id}/members', [ProjectController::class, 'getProjectMembers']);
+    Route::post('/projects/{projectId}/messages', [ProjectMessageController::class, 'store']);
 
-Route::post('/projects/{project_id}/request', [ProjectRequestController::class, 'store']);
-Route::post('/requests/{request_id}/respond', [ProjectRequestController::class, 'respond']);
-Route::get('/notifications', [NotificationController::class, 'index']); // Notificaciones del usuario logueado
+    Route::post('/projects/{project_id}/request', [ProjectRequestController::class, 'store']);
+    Route::post('/requests/{request_id}/respond', [ProjectRequestController::class, 'respond']);
+    Route::get('/notifications', [NotificationController::class, 'index']); // Notificaciones del usuario logueado
+    Route::post('/notifications/{notification_id}/read', [NotificationController::class, 'markAsRead']);
     Route::get('/project-requests', [ProjectRequestController::class, 'index']); // Requests del usuario logueado
+
+
 });
 
 Route::get('/projects/batch', [ProjectController::class, 'getProjectBatch']);
@@ -52,20 +61,14 @@ Route::put('/users/{id}', [UserController::class, 'update']);
 Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
 // Rutas para Proyectos
-Route::get('/projects', [ProjectController::class, 'index']);
-Route::get('/projects/{id}', [ProjectController::class, 'show']);
-Route::post('/projects', [ProjectController::class, 'store']);
-Route::put('/projects/{id}', [ProjectController::class, 'update']);
-Route::delete('/projects/{id}', [ProjectController::class, 'destroy']);
 
+Route::get('/projects/{id}', [ProjectController::class, 'show']);
 // Rutas para miembros de proyecto
 Route::post('/projects/{projectId}/members/{userId}', [ProjectMemberController::class, 'addUserToProject']);
 Route::delete('/projects/{projectId}/members/{userId}', [ProjectMemberController::class, 'removeUserFromProject']);
 Route::get('/projects/{projectId}/members', [ProjectMemberController::class, 'getProjectMembers']);
 
-// Rutas para mensajes de proyectos
-Route::get('/projects/{projectId}/messages', [ProjectMessageController::class, 'index']);
-Route::post('/projects/{projectId}/messages', [ProjectMessageController::class, 'store']);
+
 
 // Rutas para chats privados
 Route::get('/private-chats', [PrivateChatController::class, 'index']);
