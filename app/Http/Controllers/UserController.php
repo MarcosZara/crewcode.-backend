@@ -9,12 +9,44 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::all();
+        $perPage = 8;
+        $users = User::paginate($perPage);
+
+        return response()->json($users);
     }
+
+    public function getAllUsers()
+{
+    $users = User::all();
+    return response()->json($users);
+}
+
+// UserController.php
+public function search(Request $request)
+{
+    $query = $request->input('query', '');
+    $page = $request->input('page', 1);
+    $perPage = $request->input('perPage', 10);
+
+    $users = User::where('username', 'LIKE', "%$query%")
+                 ->paginate($perPage, ['*'], 'page', $page);
+
+    return response()->json($users);
+}
+
+
+
+
 
     public function show($id)
     {
-        return User::findOrFail($id);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        return response()->json($user);
     }
 
     public function store(Request $request)
@@ -24,15 +56,35 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-        $user->update($request->all());
-        return $user;
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'username' => 'required|string|max:255',
+            'level' => 'required|string',
+            'bio' => 'nullable|string',
+            'interests' => 'nullable|string',
+        ]);
+
+        $user->update($validatedData);
+
+        return response()->json(['message' => 'Usuario actualizado correctamente', 'user' => $user]);
     }
 
     public function destroy($id)
     {
-        User::destroy($id);
-        return response()->json(['message' => 'User deleted successfully']);
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
     }
 
 

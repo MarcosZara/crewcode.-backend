@@ -36,18 +36,17 @@ class ProjectController extends Controller
                 'teamSize' => 'nullable|integer',
                 'goal' => 'nullable|string',
                 'repositoryUrl' => 'nullable|url',
-                'image_url' => 'required', // Valida como archivo de imagen
+                'image_url' => 'required',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
         }
 
-        // Guardar la imagen y obtener la URL
+
         $imagePath = $request->file('image_url')->store('projects', 'public');
 $imageUrl = 'http://crewcode.lo' . Storage::url($imagePath);
 
 
-        // Crear el proyecto
         $project = Project::create([
             'title' => $validated['title'],
             'level' => $validated['level'],

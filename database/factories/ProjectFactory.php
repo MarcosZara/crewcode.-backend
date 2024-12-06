@@ -33,7 +33,7 @@ class ProjectFactory extends Factory
                 'TypeScript', 'Express.js', 'GraphQL', 'REST API', 'Docker', 'Webpack',
                 'SASS', 'Git', 'Figma'
             ], $this->faker->numberBetween(3, 6))),
-            'level' => $this->faker->randomElement(['Básico', 'Intermedio', 'Avanzado']),
+            'level' => $this->faker->randomElement(['Principiante', 'Intermedio', 'Avanzado', 'Experto']),
             'goal' => $this->faker->sentence,
             'duration' => $this->faker->randomElement(['3 meses', '6 meses', '1 año']),
             'team_size' => $this->faker->numberBetween(1, 10),

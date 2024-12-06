@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('image_url')->nullable();
             $table->string('theme')->nullable();
             $table->string('technologies')->nullable();
-            $table->enum('level', ['Básico', 'Intermedio', 'Avanzado'])->default('Básico');
+            $table->enum('level', ['Principiante', 'Intermedio', 'Avanzado', 'Experto'])->default('Principiante');
             $table->text('goal')->nullable();
             $table->string('duration')->nullable();
             $table->unsignedInteger('team_size')->nullable();

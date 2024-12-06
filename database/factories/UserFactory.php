@@ -38,4 +38,17 @@ class UserFactory extends Factory
             'updated_at' => now(),
         ];
     }
+    public function admin()
+{
+    return $this->state([
+        'username' => 'admin',
+        'password' => bcrypt('admin'), // Cambia esto por la contraseña que prefieras
+        'level' => 'Admin',
+        'bio' => 'Soy el administrador de CrewCode.',
+        'interests' => 'Admin,Management,Tech',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+}
+
 }
