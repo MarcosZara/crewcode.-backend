@@ -17,7 +17,7 @@ class ProjectMessageController extends Controller
         ->orderBy('created_at', 'asc')
         ->get();
 
-    return response()->json($messages);
+        return response()->json($messages);
     }
 
     public function show($id)
@@ -26,22 +26,22 @@ class ProjectMessageController extends Controller
     }
 
     public function store(Request $request, $projectId)
-{
-    $user_id = auth()->id();
+    {
+        $user_id = auth()->id();
 
-    $message = ProjectMessage::create([
-        'project_id' => $projectId,
-        'user_id' => $user_id,
-        'message_content' => $request->message,
-    ]);
+        $message = ProjectMessage::create([
+            'project_id' => $projectId,
+            'user_id' => $user_id,
+            'message_content' => $request->message,
+        ]);
 
-    $message->load('user');
+        $message->load('user');
 
-    broadcast(new ProjectMessageSent($message))->toOthers();
+        broadcast(new ProjectMessageSent($message))->toOthers();
 
 
-    return response()->json($message);
-}
+        return response()->json($message);
+    }
 
 
     public function update(Request $request, $id)

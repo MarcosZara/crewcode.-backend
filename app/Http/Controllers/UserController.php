@@ -16,12 +16,12 @@ class UserController extends Controller
     }
 
     public function getAllUsers()
-{
-    $users = User::all();
-    return response()->json($users);
-}
+    {
+        $users = User::all();
+        return response()->json($users);
+    }
 
-// UserController.php
+
 public function search(Request $request)
 {
     $query = $request->input('query', '');

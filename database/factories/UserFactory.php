@@ -42,10 +42,10 @@ class UserFactory extends Factory
 {
     return $this->state([
         'username' => 'admin',
-        'password' => bcrypt('admin'), // Cambia esto por la contraseña que prefieras
-        'level' => 'Admin',
+        'password' => bcrypt('admin'),
+        'level' => 'Experto',
         'bio' => 'Soy el administrador de CrewCode.',
-        'interests' => 'Admin,Management,Tech',
+        'interests' => 'Administración, Gestión, Tecnologías',
         'created_at' => now(),
         'updated_at' => now(),
     ]);
